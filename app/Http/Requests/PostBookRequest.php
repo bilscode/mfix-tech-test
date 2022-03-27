@@ -24,8 +24,18 @@ class PostBookRequest extends FormRequest
     public function rules()
     {
         // @TODO implement
-        return [
-            //
+       return [
+            'isbn' => ['required', 'numeric', 'unique:books,isbn', 'regex:'.$this->ISBNRule()],
+            'title' => ['required', 'string', 'max:255'],
+            'description' => ['required', 'max:255'],
+            'published_year' => ['required', 'integer', 'between:1900,2020'],
+            'authors' => ['required', 'array', 'min:1'],
+            'authors.*' => ['required', 'numeric', 'distinct', 'exists:authors,id'],
         ];
+    }
+
+    public function ISBNRule()
+    {
+        return '/^(?:ISBN(?:-1[03])?:? )?(?=[0-9X]{10}$|(?=(?:[0-9]+[- ]){3})[- 0-9X]{13}$|97[89][0-9]{10}$|(?=(?:[0-9]+[- ]){4})[- 0-9]{17}$)(?:97[89][- ]?)?[0-9]{1,5}[- ]?[0-9]+[- ]?[0-9]+[- ]?[0-9X]$/';
     }
 }
